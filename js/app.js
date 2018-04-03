@@ -1,7 +1,9 @@
 /*
  * Create a list that holds all of your cards
  */
-
+var deck = document.querySelector('.deck');
+var cardList = ['diamond', 'diamond', 'paper-plane-o', 'paper-plane-o', 'anchor', 'anchor', 'bolt', 'bolt',
+'cube', 'cube', 'leaf', 'leaf', 'bicycle', 'bicycle', 'bomb', 'bomb'];
 
 /*
  * Display the cards on the page
@@ -10,20 +12,40 @@
  *   - add each card's HTML to the page
  */
 
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+ // Shuffle function from http://stackoverflow.com/a/2450976
+ function shuffle(array) {
+     var currentIndex = array.length, temporaryValue, randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
+     while (currentIndex !== 0) {
+         randomIndex = Math.floor(Math.random() * currentIndex);
+         currentIndex -= 1;
+         temporaryValue = array[currentIndex];
+         array[currentIndex] = array[randomIndex];
+         array[randomIndex] = temporaryValue;
+     }
 
-    return array;
-}
+     return array;
+ }
+
+ function generate() {
+   var newCards = shuffle(cardList);
+   for (i = 0; i < newCards.length; i++) {
+     let newCard = document.createElement('li');
+     newCard.classList.add('card');
+     let newIcon = document.createElement('i');
+     newIcon.classList.add('fa', 'fa-' + newCards[i]);
+     newCard.appendChild(newIcon);
+     deck.appendChild(newCard);
+   }
+ }
+
+generate();
+
+ deck.addEventListener('click', function(event) {
+   if (event.target.classList.value === 'card') {
+     event.target.classList.add('open', 'show');
+   }
+ });
 
 
 /*

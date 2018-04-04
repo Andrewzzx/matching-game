@@ -4,7 +4,7 @@
 var deck = document.querySelector('.deck');
 var cardList = ['diamond', 'diamond', 'paper-plane-o', 'paper-plane-o', 'anchor', 'anchor', 'bolt', 'bolt',
 'cube', 'cube', 'leaf', 'leaf', 'bicycle', 'bicycle', 'bomb', 'bomb'];
-
+var cardsOpened = [];
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -39,14 +39,29 @@ var cardList = ['diamond', 'diamond', 'paper-plane-o', 'paper-plane-o', 'anchor'
    }
  }
 
+ function checkMatch(cardsOpened) {
+   if (cardsOpened[0].firstChild.classList.value === cardsOpened[1].firstChild.classList.value) {
+     cardsOpened[0].classList.add('match');
+     cardsOpened[1].classList.add('match');
+     cardsOpened.length = 0;
+   } else {
+     cardsOpened[0].classList.remove('open', 'show');
+     cardsOpened[1].classList.remove('open', 'show');
+     cardsOpened.length = 0;
+   }
+ }
+
 generate();
 
  deck.addEventListener('click', function(event) {
-   if (event.target.classList.value === 'card') {
+   if (event.target.classList.value === 'card' && cardsOpened.length < 2) {
      event.target.classList.add('open', 'show');
+     cardsOpened.push(event.target);
+   }
+   if (cardsOpened.length === 2) {
+     setTimeout(function run() {checkMatch(cardsOpened)}, 1500);
    }
  });
-
 
 /*
  * set up the event listener for a card. If a card is clicked:

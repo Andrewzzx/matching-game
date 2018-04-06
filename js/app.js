@@ -5,6 +5,11 @@ var deck = document.querySelector('.deck');
 var cardList = ['diamond', 'diamond', 'paper-plane-o', 'paper-plane-o', 'anchor', 'anchor', 'bolt', 'bolt',
 'cube', 'cube', 'leaf', 'leaf', 'bicycle', 'bicycle', 'bomb', 'bomb'];
 var cardsOpened = [];
+var moves = 0;
+var matches = 0;
+var cardsClicked = 0;
+var secondsCount = 0;
+var stars = document.querySelector('.stars');
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -27,6 +32,16 @@ var cardsOpened = [];
      return array;
  }
 
+ function setTimer() {
+   secondsCount++;
+   var minutes = Math.floor(secondsCount / 60);
+   var seconds = Math.floor(secondsCount % 60);
+   if (minutes < 10) {minutes = "0" + minutes}
+   if (seconds < 10) {seconds = "0" + seconds}
+   document.querySelector('.minutes').innerHTML = minutes;
+   document.querySelector('.seconds').innerHTML = seconds;
+ }
+
  function generate() {
    var newCards = shuffle(cardList);
    for (i = 0; i < newCards.length; i++) {
@@ -39,29 +54,55 @@ var cardsOpened = [];
    }
  }
 
+ function addMoves() {
+   moves++;
+   document.querySelector('.moves').innerHTML = moves;
+ }
+
  function checkMatch(cardsOpened) {
    if (cardsOpened[0].firstChild.classList.value === cardsOpened[1].firstChild.classList.value) {
      cardsOpened[0].classList.add('match');
      cardsOpened[1].classList.add('match');
+     matches++;
      cardsOpened.length = 0;
+     addMoves();
    } else {
      cardsOpened[0].classList.remove('open', 'show');
      cardsOpened[1].classList.remove('open', 'show');
      cardsOpened.length = 0;
+     addMoves();
+   }
+   if (matches === 8) {
+     alert("Congratulations! You did it in " + document.querySelector('.minutes').innerHTML + " minutes and " +
+      document.querySelector('.seconds').innerHTML +
+     " seconds. Your rating: " + stars.children.length + " of 3 stars.");
+   }
+ }
+
+ function checkStars() {
+   if (moves === 3 || moves === 6 || moves === 10) {
+     stars.removeChild(stars.firstChild);
    }
  }
 
 generate();
 
  deck.addEventListener('click', function(event) {
+   cardsClicked++;
+   if (cardsClicked === 1) {
+      setInterval(setTimer, 1000);
+    }
    if (event.target.classList.value === 'card' && cardsOpened.length < 2) {
      event.target.classList.add('open', 'show');
      cardsOpened.push(event.target);
    }
    if (cardsOpened.length === 2) {
-     setTimeout(function run() {checkMatch(cardsOpened)}, 1500);
+     setTimeout(function run() {checkMatch(cardsOpened)}, 1000);
    }
+   checkStars();
  });
+
+ document.querySelector('.restart').addEventListener('click', generate);
 
 /*
  * set up the event listener for a card. If a card is clicked:

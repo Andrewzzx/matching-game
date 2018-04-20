@@ -91,16 +91,17 @@ var stars = document.querySelector('.stars');
  }
 
  function checkMatch(cardsOpened) {
-   addMoves();
    if (cardsOpened[0].firstChild.classList.value === cardsOpened[1].firstChild.classList.value) {
      cardsOpened[0].classList.add('match');
      cardsOpened[1].classList.add('match');
      matches++;
      cardsOpened.length = 0;
-   } else {
+     addMoves();
+   } else if (cardsOpened[0].firstChild.classList.value !== cardsOpened[1].firstChild.classList.value) {
      cardsOpened[0].classList.remove('open', 'show');
      cardsOpened[1].classList.remove('open', 'show');
      cardsOpened.length = 0;
+     addMoves();
    }
    if (matches === 8) {
      window.confirm("Congratulations! You did it in " + document.querySelector('.minutes').innerHTML + " minutes and " +

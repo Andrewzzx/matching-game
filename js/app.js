@@ -37,7 +37,7 @@ var stars = document.querySelector('.stars');
    secondsCount++;
    var minutes = Math.floor(secondsCount / 60);
    var seconds = Math.floor(secondsCount % 60);
-   if (minutes < 10) {minutes = "0" + minutes}
+   if (minutes < 10) {minutes = "0" + minutes} //timer format
    if (seconds < 10) {seconds = "0" + seconds}
    document.querySelector('.minutes').innerHTML = minutes;
    document.querySelector('.seconds').innerHTML = seconds;
@@ -55,16 +55,10 @@ var stars = document.querySelector('.stars');
    }
  }
 
- function checkStars() {
-   if (moves === 3 || moves === 6 || moves === 10) {
-     stars.removeChild(stars.firstChild);
-   }
- }
-
  function addMoves() {
    moves++;
    document.querySelector('.moves').innerHTML = moves;
-   if (moves === 3 || moves === 5 || moves === 20) {
+   if (moves === 9 || moves === 15 || moves === 20) {
      stars.removeChild(stars.firstChild);
    }
  }

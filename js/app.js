@@ -7,6 +7,7 @@ var cardList = ['diamond', 'diamond', 'paper-plane-o', 'paper-plane-o', 'anchor'
 var cardsOpened = [];
 var moves = 0;
 var matches = 0;
+var interval = 0;
 var cardsClicked = 0;
 var secondsCount = 0;
 var stars = document.querySelector('.stars');
@@ -54,55 +55,82 @@ var stars = document.querySelector('.stars');
    }
  }
 
- function addMoves() {
-   moves++;
-   document.querySelector('.moves').innerHTML = moves;
- }
-
- function checkMatch(cardsOpened) {
-   if (cardsOpened[0].firstChild.classList.value === cardsOpened[1].firstChild.classList.value) {
-     cardsOpened[0].classList.add('match');
-     cardsOpened[1].classList.add('match');
-     matches++;
-     cardsOpened.length = 0;
-     addMoves();
-   } else {
-     cardsOpened[0].classList.remove('open', 'show');
-     cardsOpened[1].classList.remove('open', 'show');
-     cardsOpened.length = 0;
-     addMoves();
-   }
-   if (matches === 8) {
-     alert("Congratulations! You did it in " + document.querySelector('.minutes').innerHTML + " minutes and " +
-      document.querySelector('.seconds').innerHTML +
-     " seconds. Your rating: " + stars.children.length + " of 3 stars.");
-   }
- }
-
  function checkStars() {
    if (moves === 3 || moves === 6 || moves === 10) {
      stars.removeChild(stars.firstChild);
    }
  }
 
+ function addMoves() {
+   moves++;
+   document.querySelector('.moves').innerHTML = moves;
+   if (moves === 3 || moves === 5 || moves === 20) {
+     stars.removeChild(stars.firstChild);
+   }
+ }
+
+ function restart() {
+   clearInterval(interval);
+   cardsClicked = 0;
+   matches = 0;
+   secondsCount = 0;
+   moves = 0;
+   minutes = '00';
+   seconds = '00';
+   document.querySelector('.minutes').innerHTML = minutes;
+   document.querySelector('.seconds').innerHTML = seconds;
+   document.querySelector('.moves').innerHTML = moves;
+   while (deck.firstChild) {
+     deck.removeChild(deck.firstChild);
+   }
+   while (stars.firstChild) {
+     stars.removeChild(stars.firstChild);
+   }
+   generate();
+   stars.innerHTML = '<li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li>';
+ }
+
+ function checkMatch(cardsOpened) {
+   addMoves();
+   if (cardsOpened[0].firstChild.classList.value === cardsOpened[1].firstChild.classList.value) {
+     cardsOpened[0].classList.add('match');
+     cardsOpened[1].classList.add('match');
+     matches++;
+     cardsOpened.length = 0;
+   } else {
+     cardsOpened[0].classList.remove('open', 'show');
+     cardsOpened[1].classList.remove('open', 'show');
+     cardsOpened.length = 0;
+   }
+   if (matches === 8) {
+     window.confirm("Congratulations! You did it in " + document.querySelector('.minutes').innerHTML + " minutes and " +
+      document.querySelector('.seconds').innerHTML +
+     " seconds. Your rating: " + stars.children.length + " of 3 stars.");
+     if (confirm("Want to restart the game?")) {
+       restart();
+     }
+   }
+ }
+
 generate();
 
- deck.addEventListener('click', function(event) {
-   cardsClicked++;
-   if (cardsClicked === 1) {
-      setInterval(setTimer, 1000);
-    }
-   if (event.target.classList.value === 'card' && cardsOpened.length < 2) {
-     event.target.classList.add('open', 'show');
-     cardsOpened.push(event.target);
-   }
-   if (cardsOpened.length === 2) {
-     setTimeout(function run() {checkMatch(cardsOpened)}, 1000);
-   }
-   checkStars();
- });
+deck.addEventListener('click', function(event) {
+  if (event.target.classList.value === 'card') {
+       cardsClicked++;
+       if (cardsClicked === 1) {
+          interval = setInterval(setTimer, 1000);
+        }
+       if (cardsOpened.length < 2) {
+         event.target.classList.add('open', 'show');
+         cardsOpened.push(event.target);
+       }
+       if (cardsOpened.length === 2) {
+         setTimeout(function run() {checkMatch(cardsOpened)}, 1000);
+       }
+ }
+});
 
- document.querySelector('.restart').addEventListener('click', generate);
+ document.querySelector('.restart').addEventListener('click', function run() {restart()});
 
 /*
  * set up the event listener for a card. If a card is clicked:
